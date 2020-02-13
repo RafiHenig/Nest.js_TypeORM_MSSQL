@@ -1,0 +1,13 @@
+{
+    "type": "mssql",
+    "host": "{{HOST}}",
+    "username": "{{USERNAME}}",
+    "password": "{{PASSWORD}}",
+    "database": "{{DATABASE}}",
+    "synchronize": true,
+    "entities":["dist/**/*.entity.js"],
+    "options": {
+        "encrypt": false,
+        "enableArithAbort": true
+    }
+}
