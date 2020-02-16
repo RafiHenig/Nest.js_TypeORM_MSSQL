@@ -8,6 +8,8 @@ export class PhotoController {
 
     }
 
+    
+
     @Post()
     async postPhot(@Body() photo: PhotoDto) {
         return this.photoService.createPhoto(photo);

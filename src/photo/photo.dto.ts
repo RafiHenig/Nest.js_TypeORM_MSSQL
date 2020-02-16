@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsBoolean } from 'class-validator';
+import { IsString, IsNumber, IsArray, IsBoolean } from 'class-validator';
 
 export class PhotoDto {
     constructor(init?: PhotoDto) {
@@ -15,11 +15,8 @@ export class PhotoDto {
     @IsString()
     filename?: string;
 
-    @IsInt()
-    views?: number;
-
     @IsBoolean()
-    isPublished?: boolean;
+    mainPhoto: boolean;
 }
 
 

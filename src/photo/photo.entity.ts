@@ -1,7 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Portfolio } from '../portfolio/portfolio.entity';
 
 @Entity()
 export class Photo {
+  constructor(init?: Partial<Photo>) {
+    Object.assign(this, init)
+  }
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -15,9 +19,10 @@ export class Photo {
   @Column()
   filename: string;
 
-  @Column('int')
-  views: number;
-
   @Column()
-  isPublished: boolean;
+  mainPhoto: boolean;
+
+  @ManyToOne(() => Portfolio, porfolio => porfolio.photos)
+  portfolio: Portfolio
+
 }

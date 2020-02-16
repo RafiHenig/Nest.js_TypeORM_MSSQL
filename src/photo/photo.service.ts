@@ -14,10 +14,10 @@ export class PhotoService {
         if (errors?.length) throw new BadRequestException('One or more of the provided values is not valid.');
 
 
-        const { views, name, description, filename, isPublished } = photoDto;
+        const { name, description, filename } = photoDto;
 
 
-        await this.photoRepository.save({ views, name, description, filename, isPublished });
+        await this.photoRepository.save({ name, description, filename });
 
         return "How are you"
     }
