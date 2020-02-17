@@ -7,16 +7,26 @@ import { UserDTO } from '../user/dto/user.dto';
 
 @Injectable()
 export class RoleService {
-    constructor(
-        @InjectRepository(User) private readonly userRepository: Repository<User>,
-        @InjectRepository(Role) private readonly roleREpository: Repository<Role>
-    ) { }
+    constructor(@InjectRepository(Role) private readonly roleREpository: Repository<Role>) { }
 
-    async matchRoles(user: UserDTO, roles: string[]) {
+    async matchRoles(user: UserDTO, roles: string[]): Promise<boolean> {
         return roles.some(x => user.roles.find(y => y.name == x));
     }
 
-    async create(name: string) {
+    async create(name: string): Promise<void> {
         await this.roleREpository.save(new Role({ name }))
+    }
+
+    async getAll(): Promise<Role[]> {
+        return await this.roleREpository.find();
+    }
+
+    async getById(name: string): Promise<UserDTO[]> {
+        const users = await this.roleREpository.createQueryBuilder()
+            .relation(Role, "users")
+            .of(name)
+            .loadMany<User>();
+
+        return await UserDTO.toDtos(users);
     }
 }

@@ -5,7 +5,6 @@ import { AuthService } from './auth.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/user.entity';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {

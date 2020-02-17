@@ -1,10 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, Unique } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, Unique, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { randomBytes, pbkdf2Sync } from "crypto";
 import { Role } from "../role/role.entity";
+import { Updated_At_Created_At } from "../common/entities/updated_at_created_at.entity";
 
 @Entity()
 @Unique(["email"])
-export class User {
+export class User extends Updated_At_Created_At {
     @PrimaryGeneratedColumn()
     public id: number;
 
@@ -20,7 +21,7 @@ export class User {
     @Column({ type: "nvarchar", length: "MAX" })
     public salt: string;
 
-    @ManyToMany(() => Role, { cascade: ["insert", "update"] })
+    @ManyToMany(() => Role, role => role.users, { cascade: ["insert", "update"] })
     @JoinTable()
     public roles: Role[];
 
@@ -35,6 +36,7 @@ export class User {
     }
 
     constructor(init?: Partial<User>) {
+        super()
         Object.assign(this, init)
     }
 }

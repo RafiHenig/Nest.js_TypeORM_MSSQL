@@ -1,18 +1,37 @@
-import { Controller, Post, UsePipes, Body, Session, Req, ValidationPipe, Delete, Query, ParseIntPipe, Get } from '@nestjs/common';
+import { Controller, Post, Body, Delete, ParseIntPipe, Get, Param } from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { Roles } from '../role/role.decorator';
 import { AssociateRolesDTO } from './dto/associate-roles.dto';
 import { User } from '../common/decorators/user.decorator';
-import { RolesExistencePipe } from '../role/pipes/roles-existence.pipe';
 import { UserDTO } from './dto/user.dto';
-import { Role } from '../role/role.entity';
-import passport = require('passport');
-import { AuthGuard } from '@nestjs/passport';
+import { User as UserEntity } from './user.entity';
+import { RoleRegisteredPipe } from '../role/pipes/role-registered.pipe';
+import { UserPipe } from './pipes/user.pipe';
+import { RoleNotAssociatedPipe } from '../role/pipes/role-not-associated.pipe';
+import { RoleAssociatedPipe } from '../role/pipes/role-associated.pipe';
 
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) { }
+
+    @Roles("Basic", "Admin")
+    @Get()
+    async getSession(@User() user: UserDTO) {
+        return user;
+    }
+
+    @Roles("Admin")
+    @Get("all")
+    async getAll(): Promise<UserDTO[]> {
+        return this.userService.getAll();
+    }
+
+    @Roles("Admin")
+    @Get(":id")
+    async get(@Param('id', ParseIntPipe, UserPipe) user: UserEntity) {
+        return user;
+    }
 
     @Roles("Admin")
     @Post()
@@ -22,30 +41,27 @@ export class UserController {
 
     @Roles("Admin")
     @Delete(":id")
-    async delate(@Query(ParseIntPipe) id: number) {
-        await this.userService.deleteUser(id)
+    async delate(@Param('id', ParseIntPipe, UserPipe) user: UserEntity) {
+        await this.userService.deleteUser(user);
     }
 
-    @Roles("Basic")
-    @Get()
-    async get(@User() user: UserDTO) {
-        return user;
-    }
-
-    @Roles("Basic")
+    @Roles("Admin")
     @Post('associate-roles')
-    async associateRoles(@User() user: UserDTO, @Body(RolesExistencePipe) associateRolesDTO: AssociateRolesDTO) {
-        const x = await this.userService.associateRoles(associateRolesDTO, user);
-        user.roles = (await x).roles;
-        return "Done";
+    async associateRoles(
+        @Body("userId", UserPipe) user: UserEntity,
+        @Body(RoleRegisteredPipe, RoleNotAssociatedPipe) body: AssociateRolesDTO,
+    ) {
+        await this.userService.associateRoles(body.roles, user);
     }
 
     @Roles("Admin")
     @Post('disassociate-roles')
-    async disassociateRoles(@User() user: UserDTO, @Body(RolesExistencePipe) associateRolesDTO: AssociateRolesDTO) {
-        const x = this.userService.disassociateRoles(associateRolesDTO, user);
-        user.roles = (await x).roles;
-        return "Done";
+    async disassociateRoles(
+        @Body("userId", UserPipe) user: UserEntity,
+        @Body(RoleRegisteredPipe, RoleAssociatedPipe) body: AssociateRolesDTO,
+    ) {
+        await this.userService.disassociateRoles(body.roles, user);
     }
 
 }
+// if (!id) user.roles = await this.userService.getRoles(user.id);

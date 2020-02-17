@@ -7,15 +7,15 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { Role } from '../role/role.entity';
 import { AssociateRolesDTO } from './dto/associate-roles.dto';
 import { UserDTO } from './dto/user.dto';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class UserService {
 
-    constructor(
-        @InjectRepository(User) private readonly userRepository: Repository<User>,
-        @InjectRepository(Role) private readonly roleRepository: Repository<Role>) { }
+    constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) { }
 
-    async createUser(x: CreateUserDTO) {
+    async createUser(x: CreateUserDTO): Promise<void> {
         const { username, email } = x;
         const user = new User({ username, email });
         user.roles = [new Role({ name: "Basic" })]
@@ -25,27 +25,34 @@ export class UserService {
         else await this.userRepository.save(user);
     }
 
-    async deleteUser(id: number) {
-        await this.userRepository.delete({ id })
+    async deleteUser(user: User): Promise<void> {
+        await this.userRepository.delete(user);
     }
 
-    async associateRoles(x: AssociateRolesDTO, user: UserDTO) {
+    async getAll(): Promise<UserDTO[]> {
+        return UserDTO.toDtos((await this.userRepository.find({ relations: ["roles"] })));
+    }
+
+    async getRoles(id: number): Promise<Role[]> {
+        return await this.userRepository.createQueryBuilder()
+            .relation(User, "roles")
+            .of(id)
+            .loadMany<Role>();
+    }
+
+    async associateRoles(roles: string[], user: User): Promise<void> {
         await this.userRepository
             .createQueryBuilder()
             .relation(User, 'roles')
-            .of({ id: x.userId || user.id })
-            .add(x.roles.map(name => new Role({ name })));
-
-        return await this.userRepository.findOne({ where: { id: user.id }, relations: ["roles"] })
+            .of(user)
+            .add(roles);
     }
 
-    async disassociateRoles(x: AssociateRolesDTO, user: UserDTO) {
+    async disassociateRoles(roles: string[], user: User): Promise<void> {
         await this.userRepository
             .createQueryBuilder()
             .relation(User, 'roles')
-            .of({ id: x.userId || user.id })
-            .remove(x.roles.map(name => new Role({ name })))
-
-        return await this.userRepository.findOne({ where: { id: user.id }, relations: ["roles"] })
+            .of(user)
+            .remove(roles)
     }
 }

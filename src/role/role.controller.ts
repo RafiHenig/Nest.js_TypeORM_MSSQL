@@ -1,4 +1,4 @@
-import { Controller, Post, Query } from '@nestjs/common';
+import { Controller, Post, Query, Get, Param } from '@nestjs/common';
 import { Roles } from './role.decorator';
 import { RoleService } from './role.service';
 
@@ -12,4 +12,18 @@ export class RoleController {
         await this.roleService.create(name);
         return "Role Created."
     }
+
+    @Roles("Admin")
+    @Get()
+    async getAll() {
+        return await this.roleService.getAll();
+    }
+
+    @Roles("Admin")
+    @Get(":name")
+    async getById(@Param("name") name: string) {
+        return await this.roleService.getById(name)
+    }
+
+
 }
