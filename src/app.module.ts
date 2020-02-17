@@ -4,10 +4,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { PhotoModule } from './photo/photo.module';
 import { AppController } from './app.controller';
 import { PortfolioModule } from './portfolio/portfolio.module';
-import { AuthController } from './auth/auth.controller';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { RoleModule } from './role/role.module';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 // const typeOrmModuleOptions: TypeOrmModuleOptions = {
 //   type: 'mssql',
@@ -30,9 +27,7 @@ import { RoleModule } from './role/role.module';
     TypeOrmModule.forRoot(),
     PhotoModule,
     PortfolioModule,
-    AuthModule,
-    UserModule,
-    RoleModule
+    AuthenticationModule
   ],
   controllers: [AppController],
   providers: [AppService],

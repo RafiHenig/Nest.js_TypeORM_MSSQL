@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ManyToMany, BaseEntity } from "typeorm";
+import { Entity, PrimaryColumn, ManyToMany } from "typeorm";
 import { User } from "../user/user.entity";
 import { Updated_At_Created_At } from "../common/entities/updated_at_created_at.entity";
 

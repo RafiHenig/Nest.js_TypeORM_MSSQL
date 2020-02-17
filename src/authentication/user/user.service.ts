@@ -1,14 +1,10 @@
 import { Injectable, ConflictException } from '@nestjs/common';
-import { randomBytes, pbkdf2Sync } from "crypto"
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { Role } from '../role/role.entity';
-import { AssociateRolesDTO } from './dto/associate-roles.dto';
 import { UserDTO } from './dto/user.dto';
-import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
 
 @Injectable()
 export class UserService {

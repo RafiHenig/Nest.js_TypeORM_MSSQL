@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Session } from './auth/session.entity'
 import { Repository, getRepository } from 'typeorm';
 import { TypeormStore } from 'typeorm-store';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { ValidationPipe } from '@nestjs/common';
+import { Session } from './authentication/auth/session.entity';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

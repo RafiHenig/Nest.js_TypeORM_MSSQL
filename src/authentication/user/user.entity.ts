@@ -15,6 +15,9 @@ export class User extends Updated_At_Created_At {
     @Column()
     public username: string;
 
+    @Column({nullable:true})
+    public we: string;
+
     @Column({ type: "nvarchar", length: "MAX" })
     public hash: string;
 

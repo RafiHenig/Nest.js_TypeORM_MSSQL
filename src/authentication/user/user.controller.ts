@@ -3,13 +3,13 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { Roles } from '../role/role.decorator';
 import { AssociateRolesDTO } from './dto/associate-roles.dto';
-import { User } from '../common/decorators/user.decorator';
 import { UserDTO } from './dto/user.dto';
 import { User as UserEntity } from './user.entity';
 import { RoleRegisteredPipe } from '../role/pipes/role-registered.pipe';
 import { UserPipe } from './pipes/user.pipe';
 import { RoleNotAssociatedPipe } from '../role/pipes/role-not-associated.pipe';
 import { RoleAssociatedPipe } from '../role/pipes/role-associated.pipe';
+import { User } from '../common/decorators/user.decorator';
 
 @Controller('user')
 export class UserController {
