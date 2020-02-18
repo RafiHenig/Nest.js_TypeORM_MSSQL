@@ -4,15 +4,10 @@ import { PhotoService } from './photo.service';
 
 @Controller('photo')
 export class PhotoController {
-    constructor(private readonly photoService: PhotoService) {
-
-    }
-
+    constructor(private readonly photoService: PhotoService) {}
     
-
     @Post()
     async postPhot(@Body() photo: PhotoDto) {
         return this.photoService.createPhoto(photo);
     }
-
 }

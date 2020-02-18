@@ -9,8 +9,8 @@ import { UserDTO } from '../user/dto/user.dto';
 export class RoleService {
     constructor(@InjectRepository(Role) private readonly roleREpository: Repository<Role>) { }
 
-    async matchRoles(user: UserDTO, roles: string[]): Promise<boolean> {
-        return roles.some(x => user.roles.find(y => y.name == x));
+    matchRoles(user: UserDTO, roles: string[]): boolean {
+        return roles.some(x => user?.roles.find(y => y.name == x));
     }
 
     async create(name: string): Promise<void> {
